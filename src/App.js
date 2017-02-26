@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Helmet from 'react-helmet'
 import Home from './views/Home'
 import About from './views/About'
+import Contact from './views/Contact'
 import NoMatch from './views/NoMatch'
 import Nav from './components/Nav'
 import NavLink from './components/NavLink'
@@ -19,6 +20,10 @@ const routes = [
     title: 'About',
     path: '/about',
     component: About
+  }, {
+    title: 'Contact',
+    path: '/contact',
+    component: Contact
   }
 ]
 
