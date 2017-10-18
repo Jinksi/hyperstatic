@@ -43,8 +43,12 @@ export default () => injectGlobal`
     box-sizing: border-box;
   }
 
-  a:not(.style-scope) {
+  a {
     color: ${color.primary};
+
+    &.style-scope {
+      color: inherit;
+    }
   }
 
   strong {
