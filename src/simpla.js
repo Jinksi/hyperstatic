@@ -8,7 +8,7 @@ Simpla.init({
    * Github Repo
    * Repository where content will be stored (in a '_content' folder)
    */
-  repo: 'Jinksi/simpla',
+  repo: 'jinksi/hyperstatic',
 
   /**
    * Auth adapter
@@ -29,12 +29,12 @@ Simpla.init({
    * Git branch Simpla commits new content to, defaults to 'master'
    * Change this in development to make non-production changes
    */
-  branch: 'simpla'
+  branch: 'simpla',
 
   /**
    * Public directory (optional)
    * Base directory to store Simpla's '_content' folder
    * Defaults to the root of the repo
    */
-  // public: 'public'
+  public: 'public'
 })
