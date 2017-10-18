@@ -43,7 +43,7 @@ export default () => injectGlobal`
     box-sizing: border-box;
   }
 
-  a {
+  a:not(.style-scope) {
     color: ${color.primary};
   }
 
