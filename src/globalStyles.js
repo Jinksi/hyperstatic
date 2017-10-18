@@ -90,4 +90,8 @@ export default () => injectGlobal`
       }
     }
   }
+
+  img {
+    max-width: 100%;
+  }
 `
