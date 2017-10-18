@@ -1,6 +1,0 @@
-
-# Specific branch context: Deploys from this branch
-# will take these settings and override their
-# current ones.
-[context.simpla]
-  command = "bower install --config.interactive=false && yarn build"
