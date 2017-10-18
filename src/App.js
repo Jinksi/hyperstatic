@@ -21,6 +21,7 @@ class App extends Component {
   componentWillMount () {
     globalStyles()
     import('./netlifyIdentity')
+    import('./simpla')
   }
 
   getDocument = (collection, name) =>
