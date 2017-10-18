@@ -1,0 +1,8 @@
+{
+  "type": "Article",
+  "data": {
+    "value": "<h1>🍉 HyperStatic</h1><p>A not-so-static site boilerplate:</p><ul><li><p><strong>Create React App</strong> for simplicity</p></li><li><p><strong>Styled Components</strong> for component-based css</p></li><li><p><strong>React Router</strong> for routing (v4)</p></li><li><p><strong>React Helmet</strong> for document titles, descriptions, meta</p></li><li><p><strong>React Snapshot</strong> for pre-rendering to static html so it works without Javascript ⭐️</p></li><li><p><strong><a href=\"https://netlifycms.org\">Netlify CMS</a> &amp; <a href=\"https://simpla.io\">Simpla</a></strong></p></li></ul>"
+  },
+  "path": "/pages/home/content",
+  "updatedAt": "2017-10-18T20:17:04.339Z"
+}
