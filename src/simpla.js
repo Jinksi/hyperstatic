@@ -1,5 +1,6 @@
 import Simpla from 'simpla'
 import SimplaNetlify from 'simpla/adapters/netlify'
+import SimplaNetlifyIdentity from 'simpla-adapter-netlify-identity'
 
 window.Simpla = Simpla
 
@@ -15,7 +16,7 @@ Simpla.init({
    * Used to authenticate users with Github from your site
    * Included separately to simpla.js core
    */
-  auth: new SimplaNetlify({ site: 'hyperstatic' }),
+  auth: new SimplaNetlifyIdentity({ site: 'hyperstatic' }),
 
   /**
    * Public content source (optional)

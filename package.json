@@ -30,6 +30,7 @@
     "react-router-dom": "^4.1.1",
     "react-snapshot": "^1.1.0",
     "simpla": "^3.0.0",
+    "simpla-adapter-netlify-identity": "^0.1.0",
     "styled-components": "^2.1.0"
   },
   "scripts": {
