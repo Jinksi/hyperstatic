@@ -1,2 +1,0 @@
-command = "yarn && bower i && yarn build"
-publish = "build"
