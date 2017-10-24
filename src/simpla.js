@@ -1,6 +1,5 @@
 import Simpla from 'simpla'
 import SimplaNetlify from 'simpla/adapters/netlify'
-import SimplaNetlifyIdentity from 'simpla-adapter-netlify-identity'
 
 window.Simpla = Simpla
 
@@ -16,7 +15,7 @@ Simpla.init({
    * Used to authenticate users with Github from your site
    * Included separately to simpla.js core
    */
-  auth: new SimplaNetlifyIdentity({ site: 'hyperstatic' }),
+  auth: new SimplaNetlify({ site: 'hyperstatic' }),
 
   /**
    * Public content source (optional)
@@ -30,12 +29,12 @@ Simpla.init({
    * Git branch Simpla commits new content to, defaults to 'master'
    * Change this in development to make non-production changes
    */
-  branch: 'simpla',
+  branch: 'simpla-content',
 
   /**
    * Public directory (optional)
    * Base directory to store Simpla's '_content' folder
    * Defaults to the root of the repo
    */
-  public: 'public'
+  public: ''
 })
