@@ -1,0 +1,28 @@
+{
+  "name": "simpla-element-behavior",
+  "version": "0.2.3",
+  "authors": [
+    "Simpla <friends@simpla.io>"
+  ],
+  "description": "Instantly connect an element to Simpla's API",
+  "keywords": [
+    "simpla",
+    "content management",
+    "web components",
+    "behavior",
+    "polymer behavior"
+  ],
+  "main": "simpla-element-behavior.html",
+  "license": "MIT",
+  "homepage": "https://webcomponents.org/element/SimplaElements/simpla-element-behavior",
+  "ignore": [
+    "*",
+    "!src",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "devDependencies": {
+    "web-component-tester": "^4.0.0",
+    "polymer": "^1.8.0"
+  }
+}

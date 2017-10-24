@@ -1,0 +1,138 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../simpla-element-behavior/simpla-element-behavior.html">
+
+<dom-module id="simpla-text">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      :host([contenteditable]) {
+        outline: none;
+      }
+
+      :host([inline]) {
+        display: inline;
+      }
+    </style>
+    <slot></slot>
+  </template>
+  <script>
+    import editor from './behaviors/editor-connector';
+    import inline from './behaviors/inline';
+
+    const SIMPLA_CONFIG = {
+      type: 'Text',
+      dataProperties: [ 'value' ],
+      setCallback: '_setToSimpla',
+      getCallback: '_getFromSimpla'
+    };
+
+    class SimplaText {
+      beforeRegister() {
+        this.is = 'simpla-text';
+
+        this.properties = {
+          plaintext: {
+            type: Boolean,
+            value: false
+          },
+
+          placeholder: {
+            type: String,
+            value: 'Enter your text...'
+          },
+
+          noTypographer: {
+            type: Boolean,
+            value: false
+          },
+
+          active: {
+            type: Boolean,
+            notify: true,
+            readOnly: true,
+            value: false
+          },
+
+          value: {
+            type: String,
+            observer: '_renderValue'
+          }
+        };
+
+        this.listeners = {
+          'tap': '_handleTap',
+          'blur': '_handleBlur',
+          'focus': '_handleFocus',
+          'input': '_refreshValue'
+        };
+      }
+
+      attached() {
+        this._refreshValue();
+      }
+
+      get behaviors() {
+        return [ SimplaBehaviors.Element(SIMPLA_CONFIG), editor, inline ];
+      }
+
+      _handleBlur() {
+        this._setActive(false);
+      }
+
+      _handleFocus() {
+        if (this.editable) {
+          this._setActive(true);
+        }
+      }
+
+      _handleTap() {
+        if (this.editable) {
+          this._setActive(true);
+        }
+      }
+
+      _editableObserver(editable) {
+        if (!editable) {
+          this._setActive(false);
+        }
+      }
+
+      _refreshValue() {
+        let editor = this.getEditor();
+
+        this.__refreshingValue = true;
+        this.value = editor ? editor.getHTML() : this.innerHTML;
+        this.__refreshingValue = false;
+      }
+
+      _renderValue(value) {
+        let editor = this.getEditor();
+
+        if (this.__refreshingValue) {
+          return;
+        }
+
+        if (editor) {
+          editor.setHTML(value);
+        } else {
+          this.innerHTML = value;
+        }
+      }
+
+      _getFromSimpla(item) {
+        if (item && item.data && this.value !== item.data.text) {
+          this.value = item.data.text;
+        }
+      }
+
+      _setToSimpla() {
+        return { text: this.value };
+      }
+    };
+
+    Polymer(SimplaText)
+  </script>
+</dom-module>

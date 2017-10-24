@@ -1,0 +1,172 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../simpla-element-behavior/simpla-element-behavior.html">
+
+<dom-module id="simpla-article">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      :host([contenteditable]) {
+        outline: none;
+      }
+
+      /* Clearfix for image floats */
+      :host::after {
+        content: '';
+        display: table;
+        clear: both;
+      }
+
+      /**
+       * Styles for images in edit mode
+       */
+      :host ::slotted(img::selection) {
+        background: transparent;
+      }
+
+      :host ::slotted(img::-moz-selection) {
+        background: transparent;
+      }
+
+      :host([contenteditable]) ::slotted(img) {
+        cursor: pointer;
+      }
+    </style>
+    <slot></slot>
+  </template>
+  <script>
+    import initEditor from './behaviors/initEditor';
+
+    const { Element } = window.SimplaBehaviors,
+          SIMPLA_CONFIG = {
+            type: 'Article',
+            dataProperties: [ 'value' ]
+          };
+
+    Polymer({
+      is: 'simpla-article',
+
+      properties: {
+
+        /**
+         * Displayed when editable with no content
+         * @type {String}
+         */
+        placeholder: {
+          type: String,
+          value: 'Start writing...'
+        },
+
+        /**
+         * Disable 'smart' typography
+         * @type {Boolean}
+         */
+        noTypographer: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Whether article is being edited
+         * @type {Boolean}
+         */
+        active: {
+          type: Boolean,
+          notify: true,
+          value: false
+        },
+
+        /**
+         * HTML content of the article
+         * @type {String}
+         */
+        value: String,
+      },
+
+      observers: [
+        '_render(value)',
+        '_ensureInactiveIfNotEditable(editable)'
+      ],
+
+      listeners: {
+        'focus': '_goActive',
+        'blur': '_goInactive'
+      },
+
+      behaviors: [
+        SimplaBehaviors.Element(SIMPLA_CONFIG),
+        initEditor
+      ],
+
+      /**
+       * Set value prop on attach
+       * @return {undefined}
+       */
+      attached() {
+        this._refreshValue();
+      },
+
+      /**
+       * Refreshes the value prop with HTML content
+       * @return {undefined}
+       */
+      _refreshValue() {
+        const { _editor: editor } = this;
+
+        this.__refreshingValue = true;
+        this.value = editor ? editor.getHTML() : this.innerHTML;
+        this.__refreshingValue = false;
+      },
+
+      /**
+       * Renders HTML content when value changes
+       * @param  {String} value HTML string content
+       * @return {undefined}
+       */
+      _render(value) {
+        const { _editor: editor } = this;
+
+        if (this.__refreshingValue) {
+          return;
+        }
+
+        if (editor) {
+          editor.setHTML(value);
+        } else {
+          this.innerHTML = value;
+        }
+      },
+
+      /**
+       * Makes the article editor active
+       * @return {undefined}
+       */
+      _goActive() {
+        if (this.editable) {
+          this.active = true;
+        }
+      },
+
+      /**
+       * Makes article editor inactive
+       * @return {undefined}
+       */
+      _goInactive() {
+        this.active = false;
+      },
+
+      /**
+       * Ensures active is false when editable is false
+       * @param  {Boolean} editable Whether article is editable
+       * @return {undefined}
+       */
+      _ensureInactiveIfNotEditable(editable) {
+        if (!editable) {
+          this.active = false;
+        }
+      },
+    });
+  </script>
+</dom-module>

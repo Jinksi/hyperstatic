@@ -1,0 +1,48 @@
+{
+  "name": "simpla-admin",
+  "version": "1.3.0",
+  "authors": [
+    "Simpla"
+  ],
+  "description": "Beautiful, lightweight admin interface for Simpla",
+  "keywords": [
+    "simpla-element",
+    "web-component",
+    "simpla",
+    "admin",
+    "content management",
+    "cms"
+  ],
+  "main": "simpla-admin.html",
+  "license": "MIT",
+  "homepage": "http://webcomponents.org/element/SimplaElements/simpla-img",
+  "demos": {
+    "Demo": "demo/index.html"
+  },
+  "pages": {
+    "API Reference": "API.md"
+  },
+  "ignore": [
+    "*",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.0",
+    "simpla-notify": "^1.0.0",
+    "simpla-login": "^1.0.0",
+    "simple-dropdown": "simple-dropdown-menu#^0.2.0",
+    "simpla-styles": "^1.0.0",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.1.0",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.12",
+    "simple-button": "^0.2.3"
+  },
+  "devDependencies": {
+    "web-component-tester": "^5.0.0",
+    "simpla-demo-helper": "^0.1.3"
+  },
+  "resolutions": {
+    "polymer": "^1.6.0",
+    "webcomponentsjs": "^v1.0.0"
+  }
+}

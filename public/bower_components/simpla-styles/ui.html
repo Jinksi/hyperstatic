@@ -1,0 +1,156 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<style is="custom-style">
+  :root {
+
+    /**
+     * Material shadow elevation
+     * https://material.google.com/material-design/elevation-shadows.html
+     * CSS from http://codepen.io/shyndman/pen/c5394ddf2e8b2a5c9185904b57421cdb
+     */
+    --simpla-elevation-1: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                          0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                          0 3px 1px -2px rgba(0, 0, 0, 0.2);
+
+    --simpla-elevation-2: 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+                          0 1px 10px 0 rgba(0, 0, 0, 0.12),
+                          0 2px 4px -1px rgba(0, 0, 0, 0.4);
+
+    --simpla-elevation-3: 0 6px 10px 0 rgba(0, 0, 0, 0.14),
+                          0 1px 18px 0 rgba(0, 0, 0, 0.12),
+                          0 3px 5px -1px rgba(0, 0, 0, 0.4);
+
+    --simpla-elevation-4: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                          0 3px 14px 2px rgba(0, 0, 0, 0.12),
+                          0 5px 5px -3px rgba(0, 0, 0, 0.4);
+
+    --simpla-elevation-5:  0 12px 16px 1px rgba(0, 0, 0, 0.14),
+                           0 4px 22px 3px rgba(0, 0, 0, 0.12),
+                           0 6px 7px -4px rgba(0, 0, 0, 0.4);
+
+    /**
+     * Material motion easings
+     * https://material.google.com/motion/duration-easing.html#duration-easing-natural-easing-curves
+     */
+    --simpla-easing-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --simpla-easing-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
+    --simpla-easing-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
+    --simpla-easing-sharp: cubic-bezier(0.4, 0.0, 0.6, 1);
+
+    /**
+     * Responsive modular scale
+     * Uses calc and vw units for fluid sizing units
+     * Media queries used to restrain base mixin
+     * RESPONSIVE BASE: calc(12px + (15 - 12) * ((100vw - 420px) / 860));
+     */
+    --simpla-scale-000: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 0.8);
+    --simpla-scale-00: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 0.89);
+    --simpla-scale-0: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 1);
+    --simpla-scale-1: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 1.19);
+    --simpla-scale-2: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 1.6);
+    --simpla-scale-3: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 1.92);
+    --simpla-scale-4: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 2.62);
+    --simpla-scale-5: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 3.11);
+    --simpla-scale-6: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 4.24);
+    --simpla-scale-7: calc((12px + (15 - 12) * ((100vw - 420px) / 860)) * 5);
+
+    /**
+     * Typography
+     */
+    --simpla-font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", Helvetica, sans-serif;
+
+    /**
+     * Misc UI
+     */
+    --simpla-border-radius: 3px;
+    --simpla-tool-size: 42px;
+    --simpla-on-top: 2147483647;
+
+    --simpla-input: {
+      display: block;
+      font-family: var(--simpla-font-family);
+      font-size: inherit;
+      color: inherit;
+      background: transparent;
+      padding: 0.75em 0;
+      box-shadow: none;
+      outline: 0;
+      border: 0;
+      border-radius: 0;
+      border-bottom: 1px solid var(--simpla-grey-300);
+      transition: border-color 200ms ease;
+    };
+
+    --simpla-button: {
+      position: relative;
+      display: inline-block;
+      padding: 0.75em 1em;
+      min-width: 70px;
+      font-size: var(--simpla-scale-00);
+      font-family: var(--simpla-font-family);
+      font-weight: 500;
+      line-height: 1;
+      border: 0;
+      outline: 0;
+      border-radius: var(--simpla-border-radius);
+      background: var(--simpla-primary-color);
+      color: white;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+    };
+
+    --simpla-button-highlight: {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: var(--simpla-light-white);
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 100ms ease;
+    }
+
+    --simpla-button-highlight-active: {
+      opacity: 1;
+    }
+  }
+
+  /* Bounds to responsive modular scale */
+  @media screen and (min-width: 1280px) {
+    :root {
+      --simpla-scale-000: calc(15px * 0.8);
+      --simpla-scale-00: calc(15px * 0.89);
+      --simpla-scale-0: calc(15px * 1);
+      --simpla-scale-1: calc(15px * 1.19);
+      --simpla-scale-2: calc(15px * 1.6);
+      --simpla-scale-3: calc(15px * 1.92);
+      --simpla-scale-4: calc(15px * 2.62);
+      --simpla-scale-5: calc(15px * 3.11);
+      --simpla-scale-6: calc(15px * 4.24);
+      --simpla-scale-7: calc(15px * 5);
+    }
+  }
+
+  @media screen and (max-width: 420px) {
+    :root {
+      --simpla-scale-000: calc(12px * 0.8);
+      --simpla-scale-00: calc(12px * 0.89);
+      --simpla-scale-0: calc(12px * 1);
+      --simpla-scale-1: calc(12px * 1.19);
+      --simpla-scale-2: calc(12px * 1.6);
+      --simpla-scale-3: calc(12px * 1.92);
+      --simpla-scale-4: calc(12px * 2.62);
+      --simpla-scale-5: calc(12px * 3.11);
+      --simpla-scale-6: calc(12px * 4.24);
+      --simpla-scale-7: calc(12px * 5);
+    }
+  }
+</style>

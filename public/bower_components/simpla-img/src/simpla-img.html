@@ -1,0 +1,270 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../simpla-element-behavior/simpla-element-behavior.html">
+
+<dom-module id="simpla-img">
+  <script>
+    import { DEFAULT_SRC, MIN_SIZE } from './behaviors/constants';
+    import StaticConverter from './behaviors/static-converter';
+
+    const SIMPLA_CONFIG = {
+            type: 'Image',
+            dataProperties: [ 'src', 'alt' ],
+            setCallback: '_updateSimpla'
+          },
+          IMG_STYLES = {
+            editable: {
+              cursor: 'pointer',
+              outline: 'none'
+            },
+            active: {
+              visibility: 'hidden',
+              // Prevent flash while editor opening
+              transition: 'visibility',
+              transitionDelay: '50ms'
+            },
+            placeholder: {
+              minHeight: `${MIN_SIZE.height}px`,
+              minWidth: `${MIN_SIZE.width}px`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center center',
+              opacity: '0.75'
+            }
+          },
+          DEFAULT_PLACEHOLDER = 'placeholder.svg',
+          EDITOR_COMPONENT = 'simpla-img-editor';
+
+    /**
+     * Polymer SimplaImg element definition
+     * We're using the object definition to properly extend an `img` element.
+     * Using ES6 classes, Polymer won't properly setup the inheritance chain and
+     * it won't extend the HTMLImageElement, even if specified using the definition:
+     * `class SimplaImg extends HTMLImageElement { ... }`
+     */
+    const SimplaImg = {
+      is: 'simpla-img',
+
+      extends: 'img',
+
+      properties: {
+
+        /**
+         * Image src
+         * @type {String}
+         */
+        src: {
+          type: String,
+          reflectToAttribute: true,
+          value: () => DEFAULT_SRC,
+          notify: true
+        },
+
+        /**
+         * Image alt value
+         * @type {String}
+         */
+        alt: {
+          type: String,
+          reflectToAttribute: true,
+          value: '',
+          notify: true
+        },
+
+        /**
+         * Background of image when editable and no src
+         * @type {Object}
+         */
+        placeholder: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * Whether image is editable
+         * @type {Boolean}
+         */
+        editable: {
+          type: Boolean,
+          reflectToAttribute: true,
+          notify: true,
+          value: false,
+        },
+
+        /**
+         * Whether image is currently open in editor
+         * @type {Boolean}
+         */
+        active: {
+          type: Boolean,
+          notify: true,
+          value: false
+        }
+
+      },
+
+      observers: [
+        '_importEditor(editable)',
+        '_updateEditorImage(active)',
+        '_updateEditableUi(editable)',
+        '_updateEditingUi(active)',
+        '_blurOnInactive(active)',
+        '_showPlaceholder(placeholder, editable, src)'
+      ],
+
+      listeners: {
+        'tap': '_goActiveIfEditable',
+        'focusout': '_maintainFocusWhenActive',
+        'blur': '_maintainFocusWhenActive'
+      },
+
+      behaviors: [ SimplaBehaviors.Element(SIMPLA_CONFIG), StaticConverter ],
+
+      /**
+       * Set styles for editable state and make focuseable
+       * @param  {Boolean} editable Value of the editable prop
+       * @return {undefined}
+       */
+      _updateEditableUi(editable) {
+        this._toggleStyles(IMG_STYLES.editable, editable);
+
+        if (editable) {
+          this.setAttribute('tabindex', 0)
+        } else {
+          this.removeAttribute('tabindex');
+        }
+      },
+
+      /**
+       * Set inline styles for active state
+       * @param  {Boolean} active Value of the active prop
+       * @return {undefined}
+       */
+      _updateEditingUi(active) {
+        this._toggleStyles(IMG_STYLES.active, active);
+      },
+
+      /**
+       * Fake a basic placeholder with inline styles
+       * @param  {Boolean} placeholder String to apply to background
+       * @param  {Boolean} editable    Whether image is editable
+       * @param  {String} src          Img src
+       * @return {undefined}
+       */
+      _showPlaceholder(placeholder, editable, src) {
+        let showPlaceholder = editable && src === DEFAULT_SRC,
+            styles;
+
+        this.placeholder = this.placeholder || `url(${this.resolveUrl(DEFAULT_PLACEHOLDER)})`;
+
+        styles = Object.assign({ background: this.placeholder }, IMG_STYLES.placeholder);
+
+        this._toggleStyles(styles, showPlaceholder);
+      },
+
+      /**
+       * Helper function to toggle inline styles on the element
+       * @param  {Object}  styles     Styles as key value object - same format as
+       *                              HTMLElement.prototype.styles
+       * @param  {Boolean} apply      Whether to apply or remove styles
+       * @return {undefined}
+       */
+      _toggleStyles(styles, apply) {
+        let cache = this.__styleCache = this.__styleCache || {},
+            getEntriesIn = (obj) => Object.keys(obj).map(key => [ key, obj[key] ]);
+
+        getEntriesIn(styles).forEach(([ property, value ]) => {
+          let cachedValue = cache[property],
+              currentValue = this.style[property];
+
+          if (apply) {
+            cache[property] = currentValue;
+          } else {
+            cache[property] = '';
+            value = cachedValue || '';
+          }
+
+          this.style[property] = value;
+        });
+      },
+
+      /**
+       * Update Simpla data from element
+       * @return {Object} Data to set to Simpla
+       */
+      _updateSimpla() {
+        if (this.src === DEFAULT_SRC) {
+          return null;
+        }
+
+        return { src: this.src, alt: this.alt };
+      },
+
+      /**
+       * Opens editor on tap if image is editable
+       * @return {undefined}
+       */
+      _goActiveIfEditable() {
+        if (this.editable) {
+          this.active = true;
+        }
+      },
+
+      /**
+       * Stops blur events on image when opening editor,
+       * to maintain illusion that image itself is editable
+       * @param  {Event} event Blur and Focusout events
+       * @return {undefined}
+       */
+      _maintainFocusWhenActive(event) {
+        let editor = document.querySelector(EDITOR_COMPONENT);
+
+        if (event.relatedTarget === editor) {
+          event.stopImmediatePropagation();
+        }
+      },
+
+      /**
+       * Blurs the image when editor closes,
+       * to maintain illusion that image itself is editable
+       * @param  {Boolean} active Whether editor is open
+       * @return {undefined}
+       */
+      _blurOnInactive(active) {
+        if (!active) {
+          this.fire('focusout');
+          this.fire('blur', {}, { bubbles: false });
+        }
+      },
+
+      /**
+       * Updates the editor singleton based on active
+       * @param  {Boolean} active Whether this image is active
+       * @return {undefined}
+       */
+      _updateEditorImage(active) {
+        let editor = document.querySelector(EDITOR_COMPONENT);
+
+        if (editor) {
+          editor.image = active ? this : null;
+        }
+      },
+
+      /**
+       * Imports and attaches the editor on editable
+       * @param  {Boolean} editable Whether image is editable
+       * @return {undefined}
+       */
+      _importEditor(editable) {
+        let editorAttached = !!document.querySelector(EDITOR_COMPONENT),
+            editor;
+
+        if (editable && !editorAttached) {
+          this.importHref(this.resolveUrl(`${EDITOR_COMPONENT}.html`))
+
+          editor = document.createElement(EDITOR_COMPONENT);
+          document.body.appendChild(editor);
+        }
+      }
+    }
+    Polymer(SimplaImg);
+  </script>
+</dom-module>

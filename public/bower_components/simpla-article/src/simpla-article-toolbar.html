@@ -1,0 +1,462 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../simpla-styles/simpla-styles.html">
+<link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html">
+<link rel="import" href="../iron-icon/iron-icon.html" async>
+
+<!-- Material icons cherry picked from iron-icons -->
+<iron-iconset-svg name="simpla-article-toolbar">
+  <svg>
+    <defs>
+      <g id="format-bold"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></g>
+      <g id="format-italic"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></g>
+      <g id="format-quote"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></g>
+      <g id="format-size"><path d="M9 4v3h5v12h3V7h5V4H9zm-6 8h3v7h3v-7h3V9H3v3z"/></g>
+      <g id="insert-link"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></g>
+      <g id="add-a-photo"><path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/></g>
+
+      <!-- These should be replaced -->
+      <g id="vertical-align-bottom"><path d="M16 13h-3V3h-2v10H8l4 4 4-4zM4 19v2h16v-2H4z"/></g>
+      <g id="vertical-align-center"><path d="M8 19h3v4h2v-4h3l-4-4-4 4zm8-14h-3V1h-2v4H8l4 4 4-4zM4 11v2h16v-2H4z"/></g>
+      <g id="vertical-align-top"><path d="M8 11h3v10h2V11h3l-4-4-4 4zM4 3v2h16V3H4z"/></g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
+
+<dom-module id="simpla-article-toolbar">
+  <template>
+    <style>
+      :host, *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
+      :host {
+        --iron-icon-width: var(--simpla-scale-0);
+        --iron-icon-height: var(--simpla-scale-0);
+        -moz-osx-font-smoothing: grayscale;
+         -webkit-font-smoothing: antialiased;
+                 font-smoothing: antialiased;
+      }
+
+      .toolbar {
+        display: none;
+        font-size: var(--simpla-scale-0);
+        z-index: var(--simpla-on-top);
+      }
+
+      .toolbar[visible] {
+        display: flex;
+      }
+
+      /**
+       * Generic styles for floating bars
+       */
+      .bar {
+        background: var(--simpla-grey-700);
+        color: white;
+        border-radius: var(--simpla-border-radius);
+      }
+
+      .bar__tool {
+        cursor: pointer;
+        user-select: none;
+        -webkit-touch-callout: none;
+        padding: 0.4em 0.5em;
+        border-bottom: 2px solid transparent;
+      }
+
+      .bar__tool:focus {
+        outline: none;
+      }
+
+      .bar__tool[active] {
+        border-color: var(--simpla-primary-color);
+        color: var(--simpla-primary-color);
+      }
+
+      /**
+       * Range toolbar
+       */
+      .bar--range {
+        overflow: hidden;
+      }
+
+      .bar__tool--range {
+        /* Link opening transition */
+        transition: margin-left 150ms var(--simpla-easing-standard),
+                    padding 150ms var(--simpla-easing-standard),
+                    opacity 50ms ease;
+      }
+
+      .range__link {
+        font-family: var(--simpla-font-family);
+        font-size: var(--simpla-scale-000);
+        color: white;
+        outline: 0;
+        border: 0;
+        width: 0;
+        padding: 0;
+        background: transparent;
+        transition: width 150ms var(--simpla-easing-standard),
+                    padding 150ms var(--simpla-easing-standard);
+      }
+
+      .range__link::placeholder {
+        color: var(--simpla-med-white);
+      }
+
+      .bar--range[data-link-active] .range__link {
+        width: 12em;
+        padding: 0 0.5em;
+      }
+
+      .bar--range[data-link-active] .bar__tool:not(.bar__tool--range-link) {
+        opacity: 0;
+        margin-left: -1em;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      /**
+       * Newline embeds
+       */
+      .newline {
+        color: var(--simpla-grey-700);
+        transition: color 100ms ease;
+        margin-right: 0.5em;
+        cursor: pointer;
+        /* Positioning hack */
+        padding-bottom: 0.3em
+        ;
+      }
+
+      .newline:hover {
+        color: var(--simpla-text-color);
+      }
+
+      /**
+       * Image alignment toolbar
+       */
+      .bar__tool--image iron-icon {
+        transform: rotate(-90deg);
+      }
+
+      /* Stop icons becoming tap targets */
+      iron-icon {
+        pointer-events: none;
+      }
+
+      /* Patch hidden prop in Chrome and IE */
+      *[hidden] {
+        display: none !important;
+      }
+    </style>
+
+    <!--
+      Range formatting toolbar
+     -->
+    <div class="toolbar bar bar--range"
+      data-context="range"
+      visible$="[[_isContext('range', context)]]"
+      data-link-active$="[[_rangeLinkActive]]"
+    >
+      <a data-format="bold"
+        class="bar__tool bar__tool--range"
+        on-tap="_format"
+        active$="[[state.bold.applied]]"
+        hidden$="[[!state.bold.applicable]]"
+        tabindex="0">
+        <iron-icon
+          icon="simpla-article-toolbar:format-bold">
+        </iron-icon>
+      </a>
+
+      <a data-format="italic"
+        class="bar__tool bar__tool--range"
+        on-tap="_format"
+        active$="[[state.italic.applied]]"
+        hidden$="[[!state.italic.applicable]]"
+        tabindex="0">
+        <iron-icon
+          icon="simpla-article-toolbar:format-italic">
+        </iron-icon>
+      </a>
+
+      <a data-format="heading"
+        class="bar__tool bar__tool--range"
+        on-tap="_formatHeading"
+        active$="[[state.heading.applied]]"
+        hidden$="[[!state.heading.applicable]]"
+        tabindex="0">
+        <iron-icon
+          icon="simpla-article-toolbar:format-size">
+        </iron-icon>
+      </a>
+
+      <a data-format="blockquote"
+        class="bar__tool bar__tool--range"
+        on-tap="_format"
+        active$="[[state.blockquote.applied]]"
+        hidden$="[[!state.blockquote.applicable]]"
+        tabindex="0">
+        <iron-icon
+          icon="simpla-article-toolbar:format-quote">
+        </iron-icon>
+      </a>
+
+      <a data-format="link"
+        class="bar__tool bar__tool--range bar__tool--range-link"
+        active$="[[state.link.applied]]"
+        hidden$="[[!state.link.applicable]]"
+        on-tap="_toggleLink"
+        tabindex="0">
+        <iron-icon
+          icon="simpla-article-toolbar:insert-link">
+        </iron-icon>
+      </a>
+      <input
+        id="range-link-input"
+        class="range__link"
+        type="text"
+        value="{{_linkHref::input}}"
+        on-keydown="_exitLinkOnExitKeys"
+        placeholder="Enter a URL..."
+      >
+    </div>
+
+    <!--
+      Newline embed controls
+      Will become expandable picker when more embeds available
+    -->
+    <a class="toolbar newline"
+      data-context="newLine"
+      on-tap="_embed"
+      data-embed="image"
+      visible$="[[_isContext('newLine', context)]]"
+    >
+      <iron-icon
+        icon="simpla-article-toolbar:add-a-photo">
+      </iron-icon>
+    </a>
+
+    <!--
+      Image controls
+     -->
+    <div class="toolbar bar"
+      data-context="image"
+      visible$="[[_isContext('image', context)]]"
+    >
+      <a data-align="left"
+        class="bar__tool bar__tool--image"
+        on-tap="_alignImage"
+        active$="[[_equals(state.image.meta.alignment, 'left')]]"
+        tabindex="0">
+        <iron-icon
+          icon="simpla-article-toolbar:vertical-align-top">
+        </iron-icon>
+      </a>
+
+      <a data-align="center"
+        class="bar__tool bar__tool--image"
+        on-tap="_alignImage"
+        active$="[[_equals(state.image.meta.alignment, 'center')]]"
+        tabindex="0">
+        <iron-icon
+          icon="simpla-article-toolbar:vertical-align-center">
+        </iron-icon>
+      </a>
+
+      <a data-align="right"
+        class="bar__tool bar__tool--image"
+        on-tap="_alignImage"
+        active$="[[_equals(state.image.meta.alignment, 'right')]]"
+        tabindex="0">
+        <iron-icon
+          icon="simpla-article-toolbar:vertical-align-bottom">
+        </iron-icon>
+      </a>
+    </div>
+
+  </template>
+  <script>
+    import { Anchor, Range, NewLine, Image } from './behaviors/toolbar';
+
+    const TOOLBAR_CONFIGS = {
+      'newLine': { placement: 'left' },
+      'image': { placement: 'top' },
+      'range': { placement: 'top' }
+    };
+
+    Polymer({
+      is: 'simpla-article-toolbar',
+
+      properties: {
+
+        /**
+         * Determines what toolbar UI to show
+         * @type {String} range | newLine | image
+         */
+        context: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * Editor instance to attach toolbar to
+         * @type {Object}
+         */
+        editor: {
+          type: Object,
+          observer: '_updateEditorBindings'
+        },
+
+        /**
+         * Current state of plugins for toolbar UIs
+         * @type {Object}
+         */
+        state: {
+          type: Object,
+          value: () => ({})
+        },
+
+        tabindex: {
+          type: Number,
+          value: 0,
+          reflectToAttribute: true
+        }
+
+      },
+
+      behaviors: [ Anchor, Range, NewLine, Image ],
+
+      listeners: {
+        'keyup': '_stopEvent',
+        'keydown': '_stopEvent',
+        'keypress': '_stopEvent',
+        'blur': '_updateVisibility'
+      },
+
+      attached() {
+        this._setupToolbars();
+      },
+
+      /**
+       * Setup toolbar anchors based on context
+       * @return {undefined}
+       */
+      _setupToolbars() {
+        Polymer.dom(this.root)
+          .querySelectorAll('[data-context]')
+          .forEach(toolbar => {
+            this.anchor(toolbar, TOOLBAR_CONFIGS[toolbar.dataset.context]);
+          });
+      },
+
+      /**
+       * Get selection bounds of current editor
+       * @return {Object} DOMRect-like object or null
+       */
+      getBounds() {
+        return this.editor ? this.editor.getSelectionBounds() : null;
+      },
+
+      /**
+       * Updates bindings to the toolbar's editor instance
+       * @param  {Object} editor    Current editor instance to bind to
+       * @param  {Object} oldEditor Old editor to unbind from
+       * @return {undefined}
+       */
+      _updateEditorBindings(editor, oldEditor) {
+        this.__updatePositions = this.__updatePositions || (() => {
+          this.updateAnchors();
+        });
+
+        this.__updateContext = this.__updateContext || (() => {
+          let { selection: { empty }, plugins: { image } } = this.editor;
+
+          if (image.applied) {
+            this.context = 'image';
+          } else if (image.applicable) {
+            this.context = 'newLine';
+          } else if (!empty) {
+            this.context = 'range';
+          } else {
+            this.context = null;
+          }
+        });
+
+        this.__updateState = this.__updateState || ((plugin) => {
+          this.set(`state.${plugin.name}`, plugin);
+        });
+
+        this.__updateVisibility = this.__updateVisibility || this._updateVisibility.bind(this);
+
+        this.state = {};
+        this.context = null;
+
+        if (oldEditor) {
+          editor.off('select', this.__updatePositions);
+          editor.off('select', this.__updateContext);
+          editor.off('plugin', this.__updateContext);
+          editor.off('focus', this.__updateContext);
+          editor.off('plugin', this.__updateState);
+          editor.off('blur', this.__updateVisibility);
+        }
+
+        if (editor) {
+          editor.on('select', this.__updatePositions);
+          editor.on('select', this.__updateContext);
+          editor.on('plugin', this.__updateContext);
+          editor.on('focus', this.__updateContext);
+          editor.on('plugin', this.__updateState);
+          editor.on('blur', this.__updateVisibility);
+
+          this.__updatePositions();
+          this.__updateContext();
+
+          this.state = editor.plugins;
+        }
+      },
+
+      /**
+       * Check given check is equal to given context
+       * @param  {String}  check   Potential context to check
+       * @param  {String}  context Current context
+       * @return {Boolean}         True if check === context
+       */
+      _isContext(check, context) {
+        return check === context;
+      },
+
+      /**
+       * Stops events from bubbling up from the toolbar
+       * @param  {Event} event Event to stop propogation on
+       * @return {undefined}
+       */
+      _stopEvent(event) {
+        event.stopPropagation();
+      },
+
+      /**
+       * Simple bindings helpers to check values are equal
+       * @param  {mixed} a First value to check
+       * @param  {mixed} b Value to check against b
+       * @return {Boolean} Returns true if a === b
+       */
+      _equals(a, b) {
+        return a === b;
+      },
+
+      /**
+       * Set context to null when blurring and focused element is not contained
+       *  by this element
+       * @param  {FocusEvent} event Blur event
+       * @return {undefined}
+       */
+      _updateVisibility(event) {
+        if (!(event.relatedTarget === this || this.contains(event.relatedTarget))) {
+          this.context = null;
+        }
+      }
+    });
+  </script>
+</dom-module>

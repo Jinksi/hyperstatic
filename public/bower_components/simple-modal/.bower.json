@@ -1,0 +1,43 @@
+{
+  "name": "simple-modal",
+  "version": "0.3.3",
+  "authors": [
+    "Simpla <friends@simpla.io>"
+  ],
+  "description": "Simple style-agnostic modal element",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "simple-modal"
+  ],
+  "main": "simple-modal.html",
+  "license": "MIT",
+  "homepage": "https://github.com/SimpleElements/simple-modal/",
+  "ignore": [
+    "*",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.0",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.12",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.1.0"
+  },
+  "devDependencies": {
+    "webcomponentsjs": "^0.7.14",
+    "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "polymer": "^1.8.0"
+  },
+  "_release": "0.3.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.3.3",
+    "commit": "5e978254b8c54eda5cd3a2693c2304dbbaf9f352"
+  },
+  "_source": "https://github.com/SimpleElements/simple-modal.git",
+  "_target": "^0.3.0",
+  "_originalSource": "SimpleElements/simple-modal"
+}

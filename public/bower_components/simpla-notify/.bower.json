@@ -1,0 +1,41 @@
+{
+  "name": "simpla-notify",
+  "version": "1.0.1",
+  "authors": [
+    "Simpla <friends@simpla.io>"
+  ],
+  "description": "Beautiful notifications for Simpla elements",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "simpla-notify"
+  ],
+  "main": "simpla-notify.html",
+  "license": "MIT",
+  "homepage": "https://github.com/SimplaElements/simpla-notify/",
+  "ignore": [
+    "*",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.0",
+    "paper-toast": "PolymerElements/paper-toast#^1.3.0",
+    "simpla-styles": "^1.0.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "^5.0.0"
+  },
+  "resolutions": {
+    "polymer": "^1.8.0"
+  },
+  "_release": "1.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.1",
+    "commit": "86d7670e30d7dd10c84fa98c4a1ce0a63fc4eb88"
+  },
+  "_source": "https://github.com/SimplaElements/simpla-notify.git",
+  "_target": "^1.0.0",
+  "_originalSource": "simpla-notify"
+}

@@ -1,0 +1,34 @@
+{
+  "name": "simpla-login",
+  "version": "1.0.2",
+  "authors": [
+    "Simpla"
+  ],
+  "description": "Login modal for easily authenticating with Simpla",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "simpla-login"
+  ],
+  "main": "simpla-login.html",
+  "license": "MIT",
+  "homepage": "https://github.com/SimplaElements/simpla-login/",
+  "ignore": [
+    "*",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.0",
+    "simple-modal": "SimpleElements/simple-modal#^0.3.0",
+    "simpla-styles": "^1.0.0",
+    "simple-button": "SimpleElements/simple-button#^0.2.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "^5.0.0",
+    "simpla-notify": "SimplaElements/simpla-notify#^1.0.0"
+  },
+  "resolutions": {
+    "polymer": "^1.8.0"
+  }
+}

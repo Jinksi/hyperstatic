@@ -1,0 +1,23 @@
+{
+  "name": "simpla-styles",
+  "version": "1.0.4",
+  "authors": [
+    "Simpla <admin@simpla.io>"
+  ],
+  "description": "Common styles for the Simpla ecosystem",
+  "keywords": [
+    "web-component",
+    "styles"
+  ],
+  "main": "simpla-styles.html",
+  "license": "MIT",
+  "homepage": "https://github.com/SimplaElements/simpla-styles/",
+  "ignore": [
+    "*",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.0"
+  }
+}

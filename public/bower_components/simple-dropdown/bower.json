@@ -1,0 +1,32 @@
+{
+  "name": "simple-dropdown",
+  "version": "0.2.2",
+  "authors": [
+    "Simpla <friends@simpla.io>"
+  ],
+  "description": "Simple dropdown menu",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "simple-dropdown"
+  ],
+  "main": "simple-dropdown.html",
+  "license": "MIT",
+  "homepage": "https://github.com/SimpleElements/simple-dropdown/",
+  "ignore": [
+    "*",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.0",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.12",
+    "simple-callout": "^0.4.0",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.1.0"
+  },
+  "devDependencies": {
+    "webcomponentsjs": "^0.7.14",
+    "web-component-tester": "^5.0.0"
+  }
+}

@@ -1,0 +1,571 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../simpla-styles/simpla-styles.html">
+<link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html">
+<link rel="import" href="../iron-icon/iron-icon.html" async>
+<link rel="import" href="../paper-slider/paper-slider.html" async>
+
+<!-- Material icons cherry picked from iron-icons -->
+<iron-iconset-svg name="simpla-img">
+  <svg>
+    <defs>
+      <g id="camera-alt"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></g>
+      <g id="title"><path d="M5 4v3h5.5v12h3V7H19V4z"/></g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
+
+<dom-module id="simpla-img-editor">
+  <template>
+    <style>
+      /**
+       * Basics
+       */
+      :host, *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
+      :host {
+        display: block;
+        position: absolute;
+        outline: none;
+        font-size: var(--simpla-scale-0);
+        z-index: var(--simpla-on-top);
+        transition: box-shadow 130ms var(--simpla-easing-standard),
+                    transform 200ms var(--simpla-easing-standard);
+      }
+
+      :host([hidden])) {
+        display: none;
+      }
+
+      :host([visible]) {
+        box-shadow: var(--simpla-elevation-1);
+      }
+
+      .editor {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--simpla-light-white);
+      }
+
+      /* Vendor overwrites */
+      .cropper-view-box {
+        outline: none;
+      }
+
+      .cropper-face {
+        opacity: 0;
+      }
+
+      .cropper-point,
+      .cropper-line {
+        display: none;
+      }
+
+      /**
+       * Editor controls
+       */
+      .tools,
+      .zoom {
+        position: absolute;
+        background: var(--simpla-bright-white);
+        z-index: 1;
+        height: 30px;
+        transition: transform 130ms var(--simpla-easing-decelerate);
+      }
+
+      .tools {
+        display: flex;
+        align-items: center;
+        top: 0;
+        right: 7px;
+        max-width: 90%;
+        border-bottom-left-radius: var(--simpla-border-radius);
+        border-bottom-right-radius: var(--simpla-border-radius);
+        color: var(--simpla-grey-700);
+      }
+
+      .zoom {
+        bottom: 0;
+        width: 85%;
+        left: 0;
+        right: 0;
+        margin: auto;
+        border-top-left-radius: var(--simpla-border-radius);
+        border-top-right-radius: var(--simpla-border-radius);
+      }
+
+      :host(:not([visible])) .tools,
+      :host(:not([visible])) .zoom {
+        transition-duration: 60ms;
+        transition-timing-function: var(--simpla-easing-accelerate);
+      }
+
+      :host(:not([visible])) .zoom {
+        transform: translateY(100%);
+      }
+
+      :host(:not([visible])) .tools {
+        transform: translateY(-100%);
+      }
+
+      .zoom__slider {
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        --paper-slider-active-color: var(--simpla-primary-color);
+        --paper-slider-container-color: var(--simpla-grey-500);
+        --paper-slider-knob-color: var(--simpla-primary-color);
+        --paper-slider-knob-start-color: transparent;
+        --paper-slider-knob-start-border-color: var(--simpla-grey-700);
+      }
+
+      .zoom__disabled {
+        display: block;
+        text-align: center;
+        font-size: var(--simpla-scale-000);
+        color: var(--simpla-grey-700);
+        padding: 0.5em 0;
+        user-select: none;
+      }
+
+      .tools__tool {
+        display: inline-block;
+        padding: 5px 10px 7px;
+        cursor: pointer;
+      }
+
+      .tools__tool:hover,
+      .tools__tool[data-active] {
+        color: var(--simpla-primary-color);
+      }
+
+      .tools__tool__icon {
+        --iron-icon-width: var(--simpla-scale-0);
+        --iron-icon-height: var(--simpla-scale-0);
+      }
+
+      /* Title input */
+      .title-input {
+        font-family: var(--simpla-font-family);
+        font-size: var(--simpla-scale-000);
+        background: transparent;
+        border: none;
+        width: 0;
+        padding: 0;
+        outline: none;
+        transition: width 150ms var(--simpla-easing-standard),
+                    padding-left 150ms var(--simpla-easing-standard);
+      }
+
+      .title-input::placeholder {
+        color: var(--simpla-grey-700);
+      }
+
+      .title-input[data-expanded] {
+        width: 18em;
+        padding-left: 1em;
+      }
+
+      /* Editor Image */
+      .editor-img {
+        vertical-align: bottom;
+        transform-origin: center;
+        width: inherit;
+        height: inherit;
+        cursor: move;
+      }
+
+      .editor-img[locked] {
+        cursor: default;
+      }
+
+      /* Patch hidden prop on IE*/
+      [hidden] {
+        display: none !important;
+      }
+
+      /* Disable taps on icons */
+      iron-icon {
+        pointer-events: none;
+      }
+    </style>
+
+    <div class="editor">
+
+      <div class="tools" on-transitionend="_hideIfInactive">
+        <input type="text"
+          id="title-input"
+          class="title-input"
+          placeholder="Enter a title"
+          value="{{alt::input}}"
+          on-keydown="_closeTitleOnHotkeys"
+          data-expanded$="[[_titleOpen]]"
+        >
+        <a class="tools__tool"
+          on-tap="_toggleTitle"
+          data-active$="[[_titleOpen]]"
+        >
+          <iron-icon
+            class="tools__tool__icon"
+            icon="simpla-img:title">
+          </iron-icon>
+        </a>
+
+        <a class="tools__tool" on-tap="openFilePicker">
+          <iron-icon
+            class="tools__tool__icon"
+            icon="simpla-img:camera-alt">
+          </iron-icon>
+          <input type="file"
+            id="file-input"
+            on-change="_uploadImg"
+            hidden>
+        </a>
+      </div>
+
+      <img
+        id="source"
+        hidden="[[!src]]"
+        class="editor-img"
+        crossorigin="anonymous"
+        src$=[[src]]
+        width$=[[width]]
+        height$=[[height]]
+        on-track="_dragImage"
+        on-load="_imageLoaded"
+        draggable="false"
+        locked$="[[lockTransform]]"
+      />
+
+      <div class="zoom" on-transitionend="_hideIfInactive">
+        <paper-slider
+          id="slider"
+          class="zoom__slider"
+          immediate-value="{{zoom}}"
+          value="[[zoom]]"
+          step="0.01"
+          min="1"
+          max="2"
+          hidden$="[[lockTransform]]"
+          no-ink>
+        </paper-slider>
+        <span class="zoom__disabled"
+          hidden$="[[!lockTransform]]">
+          GIFs cannot be zoomed
+        </span>
+      </div>
+    </div>
+  </template>
+  <script>
+    import { Cropper, ExternalListeners, ImageHandler, Viewable } from './behaviors/editor';
+
+    const TITLE_EXIT_KEYS = [ 13, 27 ];
+
+    class SimplaImgEditor {
+      beforeRegister() {
+        this.is = 'simpla-img-editor';
+
+        this.properties = {
+
+          /**
+           * State of the editor
+           * @type {Boolean}
+           */
+          active: {
+            type: Boolean,
+            value: false,
+            notify: true
+          },
+
+          /**
+           * Whether editor is visible
+           * Used for CSS transitions
+           * @type {Boolean}
+           */
+          visible: {
+            type: Boolean,
+            reflectToAttribute: true,
+            readonly: true,
+            value: false
+          },
+
+          /**
+           * Whether editor is hidden
+           * Used for CSS transitions
+           * @type {Boolean}
+           */
+          hidden: {
+            type: Boolean,
+            reflectToAttribute: true,
+            readonly: true,
+            value: true
+          },
+
+          /**
+           * Image src
+           * @type {String}
+           */
+          src: {
+            type: String,
+            notify: true
+          },
+
+          /**
+           * Alt title for the image
+           * @type {String}
+           */
+          alt: {
+            type: String,
+            notify: true,
+            value: ''
+          },
+
+          /**
+           * Absolute zoom value
+           * @type {Number}
+           */
+          zoom: {
+            type: Number,
+            notify: true,
+            value: 1
+          },
+
+          /**
+           * Current position of editor image with x y coordinates
+           * @type {Object}
+           */
+          position: {
+            type: Object,
+            value: () => ({ x: 0, y: 0 })
+          },
+
+          /**
+           * Width of editor in px
+           * @type {Number}
+           */
+          width: {
+            type: Number,
+            observer: '_observeWidth'
+          },
+
+          /**
+           * Height of editor in px
+           * @type {Number}
+           */
+          height: {
+            type: Number,
+            observer: '_observeHeight'
+          },
+
+          /**
+           * Top of editor in px
+           * @type {Number}
+           */
+          top: {
+            type: Number,
+            observer: '_observeTop',
+            value: 0
+          },
+
+          /**
+           * Left of editor in px
+           * @type {Number}
+           */
+          left: {
+            type: Number,
+            observer: '_observeLeft',
+            value: 0
+          },
+
+          /**
+           * Rendered image of editorin base64 encoding. Property is debounced
+           * for performance reasons so isn't a live representation of the canvas.
+           * @type {String}
+           */
+          output: {
+            type: String,
+            notify: true
+          },
+
+          /**
+           * Whether the editor canvas is locked
+           * @type {Boolean}
+           */
+          lockTransform: {
+            type: Boolean,
+            value: false,
+            readOnly: true,
+            reflectToAttribute: true
+          },
+
+          /**
+           * Whether title input is expanded
+           * @type {Boolean}
+           */
+          _titleOpen: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Tabindex, used to give editor focus
+           * @type {Number}
+           */
+          tabindex: {
+            type: Number,
+            reflectToAttribute: true,
+            value: 0
+          }
+        };
+
+        this.observers = [
+          '_toggleVisibility(active)',
+          '_focusOnActive(active)'
+        ];
+      }
+
+      get behaviors() {
+        return [ Cropper, ExternalListeners, ImageHandler, Viewable ];
+      }
+
+      /**
+       * Utility method to open file input
+       * @param  {Event} e Tap event from parent control
+       * @return {undefined}
+       */
+      openFilePicker(e) {
+        e && e.stopPropagation();
+        this.fire('opening-filepicker');
+        this.$['file-input'].click();
+      }
+
+      _observeWidth(width) {
+        this.style.width = `${width}px`;
+      }
+
+      _observeHeight(height) {
+        this.style.height = `${height}px`;
+      }
+
+      _observeLeft(left) {
+        this.style.left = `${left}px`;
+      }
+
+      _observeTop(top) {
+        this.style.top = `${top}px`;
+      }
+
+      /**
+       * Sets open true if active is true, for transitions
+       * @param  {Boolean} active Current value of the active prop
+       * @return {undefined}
+       */
+      _toggleVisibility(active) {
+        if (active) {
+          this.hidden = false;
+          Polymer.RenderStatus
+            .afterNextRender(this, () => this.visible = true);
+        } else {
+          this.visible = false;
+        }
+      }
+
+      /**
+       * Sets active false if open is false, for transitions
+       * @param {Event} e Transitionend event
+       * @return {undefined}
+       */
+      _hideIfInactive(e){
+        if (!this.active) {
+          this.hidden = true;
+
+          // Ensure visible false if active changed during transitions
+          this.visible = false;
+        }
+      }
+
+      /**
+       * Takes file from file input and sets it to src prop
+       * @param  {Event} e Change event from file input
+       * @return {undefined}
+       */
+      _uploadImg(e) {
+        let fileInput = e.target,
+            files = fileInput.files,
+            reader = new FileReader(),
+            setFile = (e) => {
+              if (files[0].type === 'image/gif') {
+                this.zoom = 0;
+                this.position = { x: 0, y: 0 };
+                this._setLockTransform(true);
+              } else {
+                this._setLockTransform(false);
+              }
+
+              this.src = e.target.result;
+              this.fire('image-uploaded', { value: e.target.result });
+              reader.removeEventListener('load', setFile);
+
+              // Removes file from file input so that uploading a new file later
+              //  with the same name as previous will trigger change
+              fileInput.value = null;
+            };
+
+        this.focus();
+
+        if (!files || !files[0]) {
+          return;
+        }
+
+        reader.addEventListener('load', setFile);
+        reader.readAsDataURL(files[0]);
+      }
+
+      /**
+       * Override normal focus to stop scrolling on focus
+       * @return {undefined}
+       */
+      focus() {
+        let { scrollY, scrollX } = window;
+        HTMLElement.prototype.focus.call(this);
+        window.scrollTo(scrollX, scrollY);
+      }
+
+      /**
+       * Utility method to toggle _titleOpen prop
+       * @return {undefined}
+       */
+      _toggleTitle() {
+        this._titleOpen = !this._titleOpen;
+      }
+
+      /**
+       * Autofocus the editor on active
+       * @param  {Boolean} active Current value of active prop
+       * @return {undefined}
+       */
+      _focusOnActive(active) {
+        if (active) {
+          this.async(() => this.focus(), 0);
+        }
+      }
+
+      /**
+       * Close title input if it receives special keys
+       * @param  {Event} e Keyup event from link input
+       * @return {undefined}
+       */
+      _closeTitleOnHotkeys(e) {
+        if (TITLE_EXIT_KEYS.indexOf(e.keyCode) !== -1) {
+          this._titleOpen = false;
+        }
+      }
+
+    };
+
+    Polymer(SimplaImgEditor);
+  </script>
+</dom-module>

@@ -1,0 +1,65 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Include colors and UI -->
+<link rel="import" href="colors.html" async>
+<link rel="import" href="ui.html" async>
+
+<style is="custom-style">
+  :root {
+
+    /**
+     * Simple Modal
+     */
+    --simpla-simple-modal: {
+      box-shadow: var(--simpla-elevation-3);
+      border-radius: var(--simpla-border-radius);
+    };
+
+    --simpla-simple-modal-title:  {
+      font-family: var(--simpla-font-family);
+      font-size: var(--simpla-scale-3);
+      font-weight: 400;
+      background: var(--simpla-primary-color);
+      color: white;
+      text-align: center;
+      padding: 0.75em 1.25em;
+      margin: 0;
+    };
+
+    --simpla-simple-modal-overlay: var(--simpla-light-black);
+    --simpla-simple-modal-close-color: var(--simpla-med-black);
+
+    /**
+     * Simple Callout
+     */
+    --simpla-simple-callout: {
+      box-shadow: var(--simpla-elevation-1);
+      border-radius: var(--simpla-border-radius);
+    };
+
+    /**
+     * Simple Dropdown
+     */
+    --simpla-simple-dropdown-menu: {
+      box-shadow: var(--simpla-elevation-2);
+      border-radius: var(--simpla-border-radius);
+    };
+
+    --simpla-simple-dropdown-menu-item: {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+         -ms-flex-align: center;
+            align-items: center;
+      color: var(--simpla-text-color);
+      font-size: var(--simpla-scale-00);
+      padding: 0.8em 1.5em;
+      white-space: nowrap;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+    };
+  }
+</style>

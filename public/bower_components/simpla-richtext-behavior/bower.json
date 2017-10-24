@@ -1,0 +1,30 @@
+{
+  "name": "simpla-richtext-behavior",
+  "version": "0.4.4",
+  "authors": [
+    "Simpla"
+  ],
+  "description": "Behavior to add richtext editing to an element",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "simpla-richtext"
+  ],
+  "main": "simpla-richtext-behavior.html",
+  "license": "MIT",
+  "homepage": "https://github.com/SimplaElements/simpla-richtext-behavior",
+  "demos": {
+    "Demo": "demo/index.html"
+  },
+  "ignore": [
+    "*",
+    "!src",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "devDependencies": {
+    "polymer": "^1.8.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.2.5",
+    "web-component-tester": "^4.0.0"
+  }
+}

@@ -15,4 +15,4 @@ build
 npm-debug.log
 
 src/data.json
-public/bower_components
+#public/bower_components

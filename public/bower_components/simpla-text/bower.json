@@ -1,0 +1,49 @@
+{
+  "name": "simpla-text",
+  "version": "1.2.2",
+  "authors": [
+    "Simpla <friends@simpla.io>"
+  ],
+  "description": "Editable richtext for the Simpla content system",
+  "keywords": [
+    "simpla",
+    "web-components",
+    "custom-element",
+    "richtext",
+    "editor",
+    "cms",
+    "content-management"
+  ],
+  "main": "simpla-text.html",
+  "license": "MIT",
+  "homepage": "http://webcomponents.org/element/SimplaElements/simpla-text",
+  "pages": {
+    "API Reference": "API.md"
+  },
+  "demos": {
+    "Demo": "demo/index.html"
+  },
+  "ignore": [
+    "*",
+    "!src",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.0",
+    "simpla-styles": "^1.0.0",
+    "iron-icon": "^1.0.12",
+    "iron-iconset-svg": "^1.1.0",
+    "simpla-element-behavior": "^0.2.3",
+    "simpla-richtext-behavior": "^0.4.4"
+  },
+  "devDependencies": {
+    "web-component-tester": "^4.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.2.5",
+    "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.4.1",
+    "simpla-demo-helper": "^0.1.2"
+  },
+  "resolutions": {
+    "polymer": "^1.8.0"
+  }
+}

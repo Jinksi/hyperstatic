@@ -1,0 +1,32 @@
+{
+  "name": "simple-callout",
+  "version": "0.4.4",
+  "authors": [
+    "Simpla <friends@simpla.io>"
+  ],
+  "description": "Lightweight, style-agnostic callout box that works anywhere.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "simple-callout"
+  ],
+  "main": "simple-callout.html",
+  "license": "MIT",
+  "homepage": "https://github.com/SimpleElements/simple-callout/",
+  "ignore": [
+    "*",
+    "!src",
+    "!*.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "polymer": "^1.8.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "^6.0.0"
+  },
+  "resolutions": {
+    "polymer": "^1.8.0"
+  }
+}
