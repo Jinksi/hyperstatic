@@ -22,7 +22,7 @@ Simpla.init({
    * Public URL of your content, defaults to fetching directly from GitHub
    * Push your content to a CDN like Netlify in production
    */
-  source: window.location.origin,
+  source: 'https://simpla-content--hyperstatic.netlify.com',
 
   /**
    * Commit branch (optional)
