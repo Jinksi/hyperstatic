@@ -6,6 +6,7 @@ const Nav = styled.div`
   background: white;
   position: sticky;
   top: 0;
+  z-index: 1;
 `
 
 export default (props) => (
