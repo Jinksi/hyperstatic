@@ -17,7 +17,7 @@ import globalStyles from './globalStyles'
 
 export const siteTitle = 'HyperStatic'
 const siteDescription = 'A not-so-static site boilerplate.'
-const siteUrl = 'https://hyperstatic.netlify.com'
+const siteUrl = 'https://deploy-preview-17--hyperstatic.netlify.com'
 const routes = [
   {
     title: 'Home',
@@ -56,7 +56,7 @@ class App extends Component {
             title={siteTitle}
             url={siteUrl}
             description={siteDescription}
-            imagePath={'/card-og.png'}
+            absoluteImageUrl={siteUrl + '/card-og.png'}
             twitterCreatorAccount={'@Jinksi'}
             twitterSiteAccount={null}
           />
