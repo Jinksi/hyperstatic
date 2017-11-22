@@ -17,7 +17,7 @@ import globalStyles from './globalStyles'
 
 export const siteTitle = 'HyperStatic'
 const siteDescription = 'A not-so-static site boilerplate.'
-const siteUrl = 'https://deploy-preview-17--hyperstatic.netlify.com'
+const siteUrl = 'https://hyperstatic.netlify.com'
 const routes = [
   {
     title: 'Home',
