@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Helmet from 'react-helmet'
 
 import ScrollToTop from './components/ScrollToTop'
+import SocialMeta from './components/SocialMeta'
 import Home from './views/Home'
 import About from './views/About'
 import Contact from './views/Contact'
@@ -15,18 +16,22 @@ import ServiceWorkerNotifications from './components/ServiceWorkerNotifications'
 import globalStyles from './globalStyles'
 
 export const siteTitle = 'HyperStatic'
+const siteDescription = 'A not-so-static site boilerplate.'
+const siteUrl = 'https://hyperstatic.netlify.com'
 const routes = [
   {
     title: 'Home',
     path: '/',
     comp: Home,
     exact: true
-  }, {
+  },
+  {
     title: 'About',
     path: '/about/',
     comp: About,
     exact: true
-  }, {
+  },
+  {
     title: 'Contact',
     path: '/contact/',
     comp: Contact,
@@ -47,13 +52,21 @@ class App extends Component {
           <ServiceWorkerNotifications reloadOnUpdate />
           <GithubCorner url='https://github.com/Jinksi/hyperstatic' />
           <Helmet titleTemplate={`${siteTitle} | %s`} />
+          <SocialMeta
+            title={siteTitle}
+            url={siteUrl}
+            description={siteDescription}
+            absoluteImageUrl={siteUrl + '/card-og.png'}
+            twitterCreatorAccount={'@Jinksi'}
+            twitterSiteAccount={null}
+          />
           <Nav>
             <Logo>
-              <span role='img' aria-label='Watermelon'>🍉</span>
+              <span role='img' aria-label='Watermelon'>
+                🍉
+              </span>
             </Logo>
-            {routes.map((route, i) => (
-              <NavLink key={i} {...route} />
-            ))}
+            {routes.map((route, i) => <NavLink key={i} {...route} />)}
           </Nav>
           <Switch>
             {routes.map((route, i) => (
