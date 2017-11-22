@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Helmet from 'react-helmet'
 
 import ScrollToTop from './components/ScrollToTop'
+import SocialMeta from './components/SocialMeta'
 import Home from './views/Home'
 import About from './views/About'
 import Contact from './views/Contact'
@@ -50,13 +51,15 @@ class App extends Component {
           <ScrollToTop />
           <ServiceWorkerNotifications reloadOnUpdate />
           <GithubCorner url='https://github.com/Jinksi/hyperstatic' />
-          <Helmet titleTemplate={`${siteTitle} | %s`}>
-            <meta property='og:title' content={siteTitle} />
-            <meta property='og:type' content='website' />
-            <meta property='og:url' content={siteUrl} />
-            <meta property='og:image' content='/card-og.png' />
-            <meta property='og:description' content={siteDescription} />
-          </Helmet>
+          <Helmet titleTemplate={`${siteTitle} | %s`} />
+          <SocialMeta
+            title={siteTitle}
+            url={siteUrl}
+            description={siteDescription}
+            imagePath={'/card-og.png'}
+            twitterCreatorAccount={'@Jinksi'}
+            twitterSiteAccount={null}
+          />
           <Nav>
             <Logo>
               <span role='img' aria-label='Watermelon'>
