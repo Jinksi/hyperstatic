@@ -15,7 +15,7 @@ const SocialMeta = ({
     <meta property='og:url' content={url} />
     <meta property='og:image' content={absoluteImageUrl} />
     <meta property='og:description' content={description} />
-    <meta name='twitter:card' content='summary' />
+    <meta name='twitter:card' content='summary_large_image' />
     {twitterSiteAccount && (
       <meta name='twitter:site' content={twitterSiteAccount} />
     )}
