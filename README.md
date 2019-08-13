@@ -8,8 +8,8 @@ A not-so-static site boilerplate:
 - **React Helmet** for document titles, descriptions, meta
 - **React Snapshot** for pre-rendering to static html so it works without Javascript ⭐️
 
-[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
-
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1ce7fc19-d374-414e-9301-5f746a44aa3d/deploy-status)](https://app.netlify.com/sites/hyperstatic/deploys)
+[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)  
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Jinksi/hyperstatic)
 
 ## Get going
